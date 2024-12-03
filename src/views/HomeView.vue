@@ -19,12 +19,14 @@ async function fetchPokemonList() {
 
     // Récupérer les détails pour chaque Pokémon
     const detailedPokemonList = await Promise.all(
-      data.results.map(async (pokemon) => {
-        const detailsResponse = await fetch(pokemon.url);
-        const detailsData = await detailsResponse.json();
+      data.results.map((pokemon, index) => {
+        const id = index + 1;
+        // const detailsResponse = await fetch(pokemon.url);
+        // const detailsData = await detailsResponse.json();
         return {
+          id: id,
           name: pokemon.name,
-          image: detailsData.sprites.front_default,
+          image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
         };
       })
     );
@@ -60,9 +62,9 @@ onMounted(() => {
       class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"
     >
       <router-link
+        v-for="pokemon in selectedPokemons"
+        :key="pokemon.id"
         :to="`/pokemon/${pokemon.id}`"
-        v-for="pokemon in pokemonList"
-        :key="pokemon.name"
         class="card bg-white shadow-md rounded-lg p-4 flex flex-col items-center text-center"
       >
         <h3 class="text-lg font-bold capitalize mb-2">{{ pokemon.name }}</h3>
